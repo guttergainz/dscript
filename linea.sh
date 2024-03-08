@@ -18,10 +18,10 @@ docker run -dit --name $CONTAINER_NAME \
     apt-get update && \
     apt-get install ethereum -y && \
     wget https://docs.linea.build/files/genesis.json -O /root/genesis.json && \
-    mkdir /root/linea_data && \
-    geth --datadir /root/linea_data init /root/genesis.json && \
+    mkdir /root/${DIR_NAME}/linea/linea_data && \
+    geth --datadir /root/${DIR_NAME}/linea/linea_data init /root/genesis.json && \
     screen -S linea -d -m geth \
-        --datadir /root/linea_data \
+        --datadir /root/${DIR_NAME}/linea/linea_data \
         --networkid 59144 \
         --rpc.allow-unprotected-txs \
         --txpool.accountqueue 50000 \
