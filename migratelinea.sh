@@ -10,7 +10,7 @@ CONTAINER_NAME="ethereum-linea-node-container"
 # Docker run command with a large series of setup commands executed in sequence
 docker run -dit --name $CONTAINER_NAME \
     --restart unless-stopped \
-    -v /root/${DIR_NAME}/linea/linea_data:/root/linea_data \
+    -v /root/${DIR_NAME}/linea/linea_data:/root/${DIR_NAME}/linea/linea_data \
     ubuntu /bin/bash -c "\
     apt-get update && apt-get upgrade -y && \
     apt-get install software-properties-common screen wget -y && \
