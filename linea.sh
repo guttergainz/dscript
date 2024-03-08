@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Read the directory name as an input variable, if required
-# read -p "Enter directory name: " DIR_NAME
+read -p "Enter directory name: " DIR_NAME
 
 # Define Docker image and container names
 IMAGE_NAME="ethereum-linea-node"
