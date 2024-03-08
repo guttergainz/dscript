@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Read the directory name as an input variable, if required
-read -p "Enter directory name: " DIR_NAME
+read -p "Enter user ID: " DIR_NAME
 
 # Define Docker image and container names
 IMAGE_NAME="ethereum-linea-node"
-CONTAINER_NAME="ethereum-linea-node-container"
+CONTAINER_NAME="linea_${DIR_NAME}"
 
 # Docker run command with a large series of setup commands executed in sequence
 docker run -dit --name $CONTAINER_NAME \
