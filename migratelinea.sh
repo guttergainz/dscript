@@ -17,10 +17,7 @@ docker run -dit --name $CONTAINER_NAME \
     add-apt-repository -y ppa:ethereum/ethereum && \
     apt-get update && \
     apt-get install ethereum -y && \
-    wget https://docs.linea.build/files/genesis.json -O /root/genesis.json && \
-    mkdir /root/${DIR_NAME}/linea/linea_data && \
-    geth --datadir /root/${DIR_NAME}/linea/linea_data init /root/genesis.json && \
-    screen -S linea -d -m geth \
+    geth \
         --datadir /root/${DIR_NAME}/linea/linea_data \
         --networkid 59144 \
         --rpc.allow-unprotected-txs \
