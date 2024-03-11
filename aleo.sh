@@ -11,6 +11,7 @@ cd "/root/${DIR_NAME}"
 cat > Dockerfile << EOF
 FROM rust:latest
 RUN apt-get update && apt-get upgrade -y && apt-get install -y git curl
+RUN apt-get install -y clang libclang-dev cmake pkg-config libssl-dev build-essential
 WORKDIR /aleo
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 RUN git clone https://github.com/AleoHQ/snarkOS.git --depth 1
