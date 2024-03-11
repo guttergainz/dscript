@@ -9,11 +9,6 @@ HOST_DATA_DIR="/root/${DIR_NAME}/linea/linea_data"
 GENESIS_FILE_URL="https://docs.linea.build/files/genesis.json"
 GENESIS_FILE="/root/${DIR_NAME}/linea/genesis.json"
 
-# mkdir -p "${HOST_DATA_DIR}"
-# fallocate -l 200G "${HOST_DATA_DIR}/linea.img"
-# mkfs.ext4 "${HOST_DATA_DIR}/linea.img"
-# mount -o loop "${HOST_DATA_DIR}/linea.img" "${HOST_DATA_DIR}"
-
 mkdir -p "/root/${DIR_NAME}"
 cd "/root/${DIR_NAME}"
 
