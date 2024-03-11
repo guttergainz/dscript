@@ -14,6 +14,7 @@ GENESIS_FILE="/root/${DIR_NAME}/linea/genesis.json"
 # mkfs.ext4 "${HOST_DATA_DIR}/linea.img"
 # mount -o loop "${HOST_DATA_DIR}/linea.img" "${HOST_DATA_DIR}"
 
+mkdir -p "/root/${DIR_NAME}"
 cd "/root/${DIR_NAME}"
 
 # Create a Dockerfile
