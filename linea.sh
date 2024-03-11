@@ -9,22 +9,10 @@ HOST_DATA_DIR="/root/${DIR_NAME}/linea/linea_data"
 GENESIS_FILE_URL="https://docs.linea.build/files/genesis.json"
 GENESIS_FILE="/root/${DIR_NAME}/linea/genesis.json"
 
-mkdir -p "${HOST_DATA_DIR}"
-fallocate -l 200G "${HOST_DATA_DIR}/linea.img"
-mkfs.ext4 "${HOST_DATA_DIR}/linea.img"
-mount -o loop "${HOST_DATA_DIR}/linea.img" "${HOST_DATA_DIR}"
-
-# Download the genesis file
-if [ ! -f "${GENESIS_FILE}" ]; then
-    echo "Downloading genesis file..."
-    curl -o "${GENESIS_FILE}" "${GENESIS_FILE_URL}"
-fi
-
-while [ ! -s "${GENESIS_FILE}" ]; do
-  echo "Waiting for genesis file to download..."
-  sleep 1
-done
-echo "Genesis file downloaded."
+# mkdir -p "${HOST_DATA_DIR}"
+# fallocate -l 200G "${HOST_DATA_DIR}/linea.img"
+# mkfs.ext4 "${HOST_DATA_DIR}/linea.img"
+# mount -o loop "${HOST_DATA_DIR}/linea.img" "${HOST_DATA_DIR}"
 
 cd "/root/${DIR_NAME}"
 
@@ -32,7 +20,8 @@ cd "/root/${DIR_NAME}"
 cat > Dockerfile << EOF
 FROM ubuntu:latest
 WORKDIR /linea
-COPY ${GENESIS_FILE} /linea/genesis.json
+RUN apt-get install -y curl
+RUN curl -o "./genesis.json" "https://docs.linea.build/files/genesis.json"
 RUN mkdir /linea/linea_data && \
     geth --datadir /linea/linea_data init /linea/genesis.json
 EXPOSE 8627 8628 30305
