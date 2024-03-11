@@ -5,10 +5,9 @@ read -p "Enter user ID: " DIR_NAME
 CONTAINER_NAME="linea_${DIR_NAME}"
 
 # Set up directory paths
-WORKING_DIR="$HOME/${DIR_NAME}"
-HOST_DATA_DIR="${WORKING_DIR}/linea/linea_data"
+HOST_DATA_DIR="/root/${DIR_NAME}/linea/linea_data"
 GENESIS_FILE_URL="https://docs.linea.build/files/genesis.json"
-GENESIS_FILE="${WORKING_DIR}/linea/genesis.json"
+GENESIS_FILE="/root/${DIR_NAME}/linea/genesis.json"
 
 mkdir -p "${HOST_DATA_DIR}"
 fallocate -l 200G "${HOST_DATA_DIR}/linea.img"
@@ -22,25 +21,25 @@ if [ ! -f "${GENESIS_FILE}" ]; then
 fi
 
 # Create a Dockerfile
-cat > "${WORKING_DIR}/Dockerfile" << EOF
+cat > "/root/${DIR_NAME}/Dockerfile" << EOF
 FROM ubuntu:latest
-WORKDIR ${WORKING_DIR}/linea
-COPY genesis.json /root/linea/genesis.json
-RUN mkdir /root/linea/linea_data && \
-    geth --datadir /root/linea/linea_data init /root/linea/genesis.json
+WORKDIR /root/${DIR_NAME}/linea
+COPY /root/${DIR_NAME}/linea/genesis.json /root/${DIR_NAME}/linea/genesis.json
+RUN mkdir /root/${DIR_NAME}/linea/linea_data && \
+    geth --datadir /root/${DIR_NAME}/linea/linea_data init /root/${DIR_NAME}/linea/genesis.json
 EXPOSE 8627 8628 30305
-CMD ["geth", "--datadir", "/root/linea/linea_data", "--networkid", "59144", "--rpc.allow-unprotected-txs", "--txpool.accountqueue", "50000", "--txpool.globalqueue", "50000", "--txpool.globalslots", "50000", "--txpool.pricelimit", "1000000", "--txpool.pricebump", "1", "--txpool.nolocals", "--http", "--http.addr", "0.0.0.0", "--http.port", "8627", "--http.corsdomain", "*", "--http.api", "web3,eth,txpool,net", "--http.vhosts", "*", "--ws", "--ws.addr", "0.0.0.0", "--ws.port", "8628", "--ws.origins", "*", "--ws.api", "web3,eth,txpool,net", "--bootnodes", "enode://...", "--discovery.port", "30305", "--port", "30305", "--syncmode", "full", "--metrics", "--verbosity", "3"]
+CMD ["geth", "--datadir", "/root/${DIR_NAME}/linea/linea_data", "--networkid", "59144", "--rpc.allow-unprotected-txs", "--txpool.accountqueue", "50000", "--txpool.globalqueue", "50000", "--txpool.globalslots", "50000", "--txpool.pricelimit", "1000000", "--txpool.pricebump", "1", "--txpool.nolocals", "--http", "--http.addr", "0.0.0.0", "--http.port", "8627", "--http.corsdomain", "*", "--http.api", "web3,eth,txpool,net", "--http.vhosts", "*", "--ws", "--ws.addr", "0.0.0.0", "--ws.port", "8628", "--ws.origins", "*", "--ws.api", "web3,eth,txpool,net", "--bootnodes", "enode://...", "--discovery.port", "30305", "--port", "30305", "--syncmode", "full", "--metrics", "--verbosity", "3"]
 EOF
 
 # Navigate to the working directory
-cd "${WORKING_DIR}"
+cd "/root/${DIR_NAME}"
 
 # Build the Docker image
 docker build -t linea-node .
 
 # Run the Docker container, mounting the host directory
 docker run -d --name "${CONTAINER_NAME}" \
-  -v "${HOST_DATA_DIR}:/root/linea/linea_data" \
+  -v "${HOST_DATA_DIR}:/root/${DIR_NAME}/linea/linea_data" \
   -p 8627:8627 -p 8628:8628 -p 30305:30305 \
   --restart unless-stopped \
   linea-node
