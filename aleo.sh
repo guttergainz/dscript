@@ -18,7 +18,7 @@ WORKDIR /aleo/snarkOS
 RUN git fetch origin testnet3:testnet3
 RUN git checkout testnet3
 RUN ./build_ubuntu.sh
-RUN . "$HOME/.cargo/env" && cargo install --locked --path .
+RUN cargo install --locked --path .
 RUN snarkos account new
 CMD ["./run-prover.sh"]
 EOF
