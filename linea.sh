@@ -32,7 +32,7 @@ cd "/root/${DIR_NAME}"
 cat > Dockerfile << EOF
 FROM ubuntu:latest
 WORKDIR /linea
-COPY genesis.json /linea/genesis.json
+COPY ./genesis.json /linea/genesis.json
 RUN mkdir /linea/linea_data && \
     geth --datadir /linea/linea_data init /linea/genesis.json
 EXPOSE 8627 8628 30305
