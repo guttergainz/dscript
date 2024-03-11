@@ -42,7 +42,7 @@ CMD ["geth", "--datadir", "/root/${DIR_NAME}/linea/linea_data", "--networkid", "
 EOF
 
 # Build the Docker image
-docker build -t linea-node .
+docker build --progress=plain -t linea-node .
 
 # Run the Docker container, mounting the host directory
 docker run -d --name "${CONTAINER_NAME}" \
