@@ -12,7 +12,7 @@ cat > Dockerfile << EOF
 FROM rust:latest
 RUN apt-get update && apt-get upgrade -y && apt-get install -y git curl
 WORKDIR /aleo
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 RUN source "$HOME/.cargo/env"
 RUN git clone https://github.com/AleoHQ/snarkOS.git --depth 1
 WORKDIR /aleo/snarkOS
