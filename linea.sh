@@ -32,6 +32,8 @@ cd "/root/${DIR_NAME}"
 cat > "/root/${DIR_NAME}/Dockerfile" << EOF
 FROM ubuntu:latest
 WORKDIR /root/${DIR_NAME}/linea
+RUN ls
+RUN ls /root/${DIR_NAME}/linea
 COPY genesis.json /root/${DIR_NAME}/linea/genesis.json
 RUN mkdir /root/${DIR_NAME}/linea/linea_data && \
     geth --datadir /root/${DIR_NAME}/linea/linea_data init /root/${DIR_NAME}/linea/genesis.json
