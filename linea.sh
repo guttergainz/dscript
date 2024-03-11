@@ -19,6 +19,7 @@ if [ ! -f "${GENESIS_FILE}" ]; then
     echo "Downloading genesis file..."
     curl -o "${GENESIS_FILE}" "${GENESIS_FILE_URL}"
 fi
+chmod 644 ${GENESIS_FILE_URL}
 
 # Create a Dockerfile
 cat > "/root/${DIR_NAME}/Dockerfile" << EOF
