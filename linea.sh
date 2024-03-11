@@ -24,7 +24,7 @@ fi
 # Create a Dockerfile
 cat > "${WORKING_DIR}/Dockerfile" << EOF
 FROM ubuntu:latest
-WORKDIR /root/linea
+WORKDIR ${WORKING_DIR}/linea
 COPY genesis.json /root/linea/genesis.json
 RUN mkdir /root/linea/linea_data && \
     geth --datadir /root/linea/linea_data init /root/linea/genesis.json
