@@ -4,7 +4,7 @@ CONTAINER_NAME="linea_${DIR_NAME}"
 
 # Step 1: Create the Dockerfile
 cat > Dockerfile << 'EOF'
-FROM ethereum/client-go:latest
+FROM ubuntu:latest
 
 # Install dependencies
 RUN apt-get update && apt-get install -y software-properties-common wget && \
