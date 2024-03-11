@@ -20,7 +20,6 @@ cd "/root/${DIR_NAME}"
 cat > Dockerfile << EOF
 FROM ubuntu:latest
 WORKDIR /linea
-RUN apt-get install -y curl
 RUN curl -o "./genesis.json" "https://docs.linea.build/files/genesis.json"
 RUN mkdir /linea/linea_data && \
     geth --datadir /linea/linea_data init /linea/genesis.json
