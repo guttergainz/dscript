@@ -13,13 +13,12 @@ FROM rust:latest
 RUN apt-get update && apt-get upgrade -y && apt-get install -y git curl
 WORKDIR /aleo
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-RUN source "$HOME/.cargo/env"
 RUN git clone https://github.com/AleoHQ/snarkOS.git --depth 1
 WORKDIR /aleo/snarkOS
 RUN git fetch origin testnet3:testnet3
 RUN git checkout testnet3
 RUN ./build_ubuntu.sh
-RUN cargo install --locked --path .
+RUN . "$HOME/.cargo/env" && cargo install --locked --path .
 RUN snarkos account new
 CMD ["./run-prover.sh"]
 EOF
