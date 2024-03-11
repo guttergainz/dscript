@@ -1,55 +1,46 @@
 #!/bin/bash
+
+# Prompt for user input
 read -p "Enter user ID: " DIR_NAME
 CONTAINER_NAME="linea_${DIR_NAME}"
 
-# Step 1: Create the Dockerfile
-cat > Dockerfile << 'EOF'
-FROM ubuntu:latest
+# Set up directory paths
+WORKING_DIR="$HOME/${DIR_NAME}"
+HOST_DATA_DIR="${WORKING_DIR}/linea/linea_data"
+GENESIS_FILE_URL="https://docs.linea.build/files/genesis.json"
+GENESIS_FILE="${WORKING_DIR}/linea/genesis.json"
 
-# Install dependencies
-RUN apt-get update && apt-get install -y software-properties-common wget && \
-    add-apt-repository -y ppa:ethereum/ethereum && \
-    apt-get update && \
-    apt-get install -y ethereum
-
-WORKDIR /root/linea
+mkdir -p "${HOST_DATA_DIR}"
+fallocate -l 200G "${HOST_DATA_DIR}/linea.img"
+mkfs.ext4 "${HOST_DATA_DIR}/linea.img"
+mount -o loop "${HOST_DATA_DIR}/linea.img" "${HOST_DATA_DIR}"
 
 # Download the genesis file
-RUN wget https://docs.linea.build/files/genesis.json
+if [ ! -f "${GENESIS_FILE}" ]; then
+    echo "Downloading genesis file..."
+    curl -o "${GENESIS_FILE}" "${GENESIS_FILE_URL}"
+fi
 
-# Prepare data directory
-RUN fallocate -l 200G /root/linea/linea.img && \
-    mkfs.ext4 /root/linea/linea.img && \
-    mkdir /root/linea/linea_data && \
-    mount -o loop /root/linea/linea.img /root/linea/linea_data
-
-# Initialize geth
-RUN geth --datadir ./linea_data init ./genesis.json
-
+# Create a Dockerfile
+cat > "${WORKING_DIR}/Dockerfile" << EOF
+FROM ubuntu:latest
+WORKDIR /root/linea
+COPY genesis.json /root/linea/genesis.json
+RUN mkdir /root/linea/linea_data && \
+    geth --datadir /root/linea/linea_data init /root/linea/genesis.json
 EXPOSE 8627 8628 30305
-
-CMD ["geth", \
-    "--datadir", "linea_data", \
-    "--networkid", "59144", \
-    "--rpc.allow-unprotected-txs", \
-    "--txpool.accountqueue", "50000", \
-    "--txpool.globalqueue", "50000", \
-    "--txpool.globalslots", "50000", \
-    "--txpool.pricelimit", "1000000", \
-    "--txpool.pricebump", "1", \
-    "--txpool.nolocals", \
-    "--http", "--http.addr", "0.0.0.0", "--http.port", "8627", "--http.corsdomain", "*", "--http.api", "web3,eth,txpool,net", "--http.vhosts", "*", \
-    "--ws", "--ws.addr", "0.0.0.0", "--ws.port", "8628", "--ws.origins", "*", "--ws.api", "web3,eth,txpool,net", \
-    "--bootnodes", "enode://...", \
-    "--discovery.port", "30305", \
-    "--port", "30305", \
-    "--syncmode", "full", \
-    "--metrics", \
-    "--verbosity", "3"]
+CMD ["geth", "--datadir", "/root/linea/linea_data", "--networkid", "59144", "--rpc.allow-unprotected-txs", "--txpool.accountqueue", "50000", "--txpool.globalqueue", "50000", "--txpool.globalslots", "50000", "--txpool.pricelimit", "1000000", "--txpool.pricebump", "1", "--txpool.nolocals", "--http", "--http.addr", "0.0.0.0", "--http.port", "8627", "--http.corsdomain", "*", "--http.api", "web3,eth,txpool,net", "--http.vhosts", "*", "--ws", "--ws.addr", "0.0.0.0", "--ws.port", "8628", "--ws.origins", "*", "--ws.api", "web3,eth,txpool,net", "--bootnodes", "enode://...", "--discovery.port", "30305", "--port", "30305", "--syncmode", "full", "--metrics", "--verbosity", "3"]
 EOF
 
-# Step 2: Build the Docker Image
+# Navigate to the working directory
+cd "${WORKING_DIR}"
+
+# Build the Docker image
 docker build -t linea-node .
 
-# Step 3: Run the Docker Container
-docker run -d --name $CONTAINER_NAME -p 8627:8627 -p 8628:8628 -p 30305:30305 --restart unless-stopped linea-node
+# Run the Docker container, mounting the host directory
+docker run -d --name "${CONTAINER_NAME}" \
+  -v "${HOST_DATA_DIR}:/root/linea/linea_data" \
+  -p 8627:8627 -p 8628:8628 -p 30305:30305 \
+  --restart unless-stopped \
+  linea-node
