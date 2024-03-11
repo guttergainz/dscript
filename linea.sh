@@ -29,9 +29,9 @@ echo "Genesis file downloaded."
 cd "/root/${DIR_NAME}"
 
 # Create a Dockerfile
-cat > "Dockerfile" << EOF
+cat > Dockerfile << EOF
 FROM ubuntu:latest
-WORKDIR linea
+WORKDIR /linea
 COPY genesis.json /linea/genesis.json
 RUN mkdir /linea/linea_data && \
     geth --datadir /linea/linea_data init /linea/genesis.json
