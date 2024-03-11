@@ -19,7 +19,14 @@ if [ ! -f "${GENESIS_FILE}" ]; then
     echo "Downloading genesis file..."
     curl -o "${GENESIS_FILE}" "${GENESIS_FILE_URL}"
 fi
-chmod 644 ${GENESIS_FILE_URL}
+
+while [ ! -s "${GENESIS_FILE}" ]; do
+  echo "Waiting for genesis file to download..."
+  sleep 1
+done
+echo "Genesis file downloaded."
+
+cd "/root/${DIR_NAME}"
 
 # Create a Dockerfile
 cat > "/root/${DIR_NAME}/Dockerfile" << EOF
@@ -31,9 +38,6 @@ RUN mkdir /root/${DIR_NAME}/linea/linea_data && \
 EXPOSE 8627 8628 30305
 CMD ["geth", "--datadir", "/root/${DIR_NAME}/linea/linea_data", "--networkid", "59144", "--rpc.allow-unprotected-txs", "--txpool.accountqueue", "50000", "--txpool.globalqueue", "50000", "--txpool.globalslots", "50000", "--txpool.pricelimit", "1000000", "--txpool.pricebump", "1", "--txpool.nolocals", "--http", "--http.addr", "0.0.0.0", "--http.port", "8627", "--http.corsdomain", "*", "--http.api", "web3,eth,txpool,net", "--http.vhosts", "*", "--ws", "--ws.addr", "0.0.0.0", "--ws.port", "8628", "--ws.origins", "*", "--ws.api", "web3,eth,txpool,net", "--bootnodes", "enode://...", "--discovery.port", "30305", "--port", "30305", "--syncmode", "full", "--metrics", "--verbosity", "3"]
 EOF
-
-# Navigate to the working directory
-cd "/root/${DIR_NAME}"
 
 # Build the Docker image
 docker build -t linea-node .
