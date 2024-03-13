@@ -15,7 +15,6 @@ WORKDIR /fuel
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 RUN curl https://install.fuel.network | sh -s -- -y
 RUN curl -sSL https://raw.githubusercontent.com/FuelLabs/fuel-core/v0.22.0/deployment/scripts/chainspec/beta_chainspec.json > chainConfig.json
-RUN fuel-core-keygen new --key-type peering
 CMD fuel-core run \
     --service-name "$NAME" \
     --keypair "$KEYPAIR" \
@@ -37,6 +36,7 @@ EOF
 docker build -t fuel-node .
 
 # Run the Docker container, mounting the host directory
+# RUN fuel-core-keygen new --key-type peering
 # docker run -d --name "${CONTAINER_NAME}" -e KEYPAIR='your_keypair' -e NAME='your_service_name' -e RELAYER='your_relayer' \
 #   --restart unless-stopped \
 #   fuel-node
