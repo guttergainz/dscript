@@ -12,7 +12,7 @@ cat > Dockerfile << EOF
 FROM rust:latest
 RUN apt-get update && apt-get upgrade -y && apt-get install -y curl
 WORKDIR /fuel
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 RUN curl https://install.fuel.network | sh
 RUN curl -sSL https://raw.githubusercontent.com/FuelLabs/fuel-core/v0.22.0/deployment/scripts/chainspec/beta_chainspec.json > chainConfig.json
 RUN fuel-core-keygen new --key-type peering
