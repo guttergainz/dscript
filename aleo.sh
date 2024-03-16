@@ -28,6 +28,6 @@ EOF
 docker build -t aleo-node .
 
 # Run the Docker container, mounting the host directory
-# docker run -d --name "${CONTAINER_NAME}" \
-#   --restart unless-stopped \
-#   aleo-node
+docker run -d --name ${CONTAINER_NAME} aleo-node tail -f /dev/null
+docker exec -it ${CONTAINER_NAME} snarkos account new
+docker exec -it ${CONTAINER_NAME} ./run-prover.sh
